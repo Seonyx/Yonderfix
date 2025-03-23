@@ -1,0 +1,32 @@
+﻿@page "/dbtest"
+@using Microsoft.EntityFrameworkCore
+@inject Yonderfix.web.Data.ApplicationDbContext DbContext
+
+<h3>Database Connection Test</h3>
+
+@if (!string.IsNullOrEmpty(Error))
+{
+    <p style="color: red;">Error: @Error</p>
+}
+else
+{
+    <p>Number of users in AspNetUsers table: @UserCount</p>
+}
+
+@code {
+    private int UserCount;
+    private string? Error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Try to count the users in the AspNetUsers table
+            UserCount = await DbContext.Users.CountAsync();
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+    }
+}

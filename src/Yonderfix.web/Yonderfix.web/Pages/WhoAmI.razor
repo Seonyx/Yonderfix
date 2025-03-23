@@ -1,0 +1,15 @@
+﻿@page "/whoami"
+
+<h3>Current Process Identity</h3>
+<p>The process is running as: @currentIdentity</p>
+
+@code {
+    private string currentIdentity;
+
+    protected override void OnInitialized()
+    {
+        // Get the current Windows identity running the process
+        currentIdentity = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+    }
+}
+

@@ -1,37 +1,62 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using Yonderfix.web.Data
+﻿@using Yonderfix.web.Helpers
+@using Microsoft.AspNetCore.Components.Authorization
+@using Yonderfix.web.Services
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+@inject CustomAuthenticationStateProvider CustomAuthProvider
 
-@inject SignInManager<ApplicationUser> SignInManager
-
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Profile</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Email">Email</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/ChangePassword">Password</NavLink>
-    </li>
-    @if (hasExternalLogins)
-    {
-        <li class="nav-item">
-            <NavLink class="nav-link" href="Account/Manage/ExternalLogins">External logins</NavLink>
-        </li>
-    }
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication">Two-factor authentication</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/PersonalData">Personal data</NavLink>
-    </li>
-</ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">YourAppName</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Other navigation links -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">Profile</a>
+                </li>
+            </ul>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-secondary me-2" @onclick="RefreshToken">Refresh Token</button>
+                        <button class="btn btn-danger" @onclick="Logout">Logout</button>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="d-flex">
+                        <a class="btn btn-primary" href="/login">Login</a>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</nav>
 
 @code {
-    private bool hasExternalLogins;
-
-    protected override async Task OnInitializedAsync()
+    private async Task RefreshToken()
     {
-        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+        try
+        {
+            await CustomAuthProvider.RefreshTokenAsync();
+            // Optionally, add further UI notifications.
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error refreshing token: {ex.Message}");
+            // Optionally, show an error message to the user.
+        }
+    }
+
+    private void Logout()
+    {
+        CustomAuthProvider.MarkUserAsLoggedOut();
+        Navigation.NavigateTo("/login");
     }
 }

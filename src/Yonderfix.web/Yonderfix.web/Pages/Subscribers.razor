@@ -1,0 +1,53 @@
+﻿@page "/subscribers"
+@inject Yonderfix.web.Services.BlueskyService BlueskyService
+@using Yonderfix.web.Services
+
+<h3>Non-Mutual Subscribers</h3>
+
+@if (isLoading)
+{
+    <p>Loading subscribers...</p>
+}
+else if (errorMessage != null)
+{
+    <p style="color: red;">Error: @errorMessage</p>
+}
+else if (subscribers?.Any() == true)
+{
+    <ul>
+        @foreach (var sub in subscribers)
+        {
+            <li>
+                <img src="@sub.ProfilePictureUrl" alt="@sub.Username" width="40" height="40" style="vertical-align:middle; margin-right:8px;" />
+                @sub.Username
+                <!-- Add Unfollow button and pagination here later -->
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No non-mutual subscribers found.</p>
+}
+
+@code {
+    private IEnumerable<Yonderfix.web.Models.Subscriber>? subscribers;
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            subscribers = await BlueskyService.GetNonMutualFollowersAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
