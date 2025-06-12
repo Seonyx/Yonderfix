@@ -15,8 +15,15 @@ namespace Yonderfix.web.Services
         /// <summary>
         /// Logs in the user by creating a new session with their handle and password.
         /// </summary>
+        /// <remarks>
+        /// This method uses direct password authentication which is generally not recommended for end-user-facing applications.
+        /// Consider using the OAuth flow provided by BlueskyService for better security and user experience.
+        /// </remarks>
+        [Obsolete("Direct password login is not recommended for user authentication. Use OAuth flow via BlueskyService instead.")]
         public async Task<CreateSessionResponse> LoginAsync(string handle, string password)
         {
+            // This method uses direct password authentication.
+            // For end-user applications, OAuth (implemented in BlueskyService) is the preferred method.
             var request = new CreateSessionRequest
             {
                 Identifier = handle,  // "Identifier" represents the user handle

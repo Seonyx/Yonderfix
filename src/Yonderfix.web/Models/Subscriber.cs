@@ -1,10 +1,13 @@
-﻿namespace Yonderfix.web.Models
+namespace Yonderfix.web.Models
 {
     public class Subscriber
     {
-        public string Username { get; set; } = string.Empty;
+        public string Did { get; set; } = string.Empty;
+        public string Handle { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
         public string ProfilePictureUrl { get; set; } = string.Empty;
-        // Add other properties as needed
+        public bool FollowsMeBack { get; set; }
+        public bool IsFollowedByMe { get; set; }
+        public string? MyFollowRecordUri { get; set; } // URI of the record of the authenticated user following this subscriber
     }
 }
-

@@ -1,14 +1,42 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
 
-<header style="background-color: #f0f0f0; padding: 1rem;">
+<header style="background-color: #f0f0f0; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <a href="/" style="text-decoration: none; color: #333; font-weight: bold;">Yonderfix</a>
+    </div>
     <nav>
-        <!-- Simple navigation bar -->
-        <a href="/Account/Login" style="margin-right: 1rem;">Sign in with Bluesky</a>
-        <a href="/Account/Logout">Logout</a>
+        <AuthorizeView>
+            <Authorized>
+                <span style="margin-right: 1rem;">Welcome, @context.User.Identity?.Name</span>
+                <a href="/subscribers" style="margin-right: 1rem;">My Followers</a>
+                <a href="/Account/Logout" style="margin-right: 1rem;">Logout</a>
+            </Authorized>
+            <NotAuthorized>
+                <a href="/Account/Login" style="margin-right: 1rem;">Sign in with Bluesky</a>
+            </NotAuthorized>
+        </AuthorizeView>
     </nav>
 </header>
 
-@Body
+<div class="container mt-4">
+    @Body
+</div>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">© @DateTime.Now.Year Yonderfix.com</span> |
+        <a href="/privacy-policy">Privacy Policy</a> |
+        <a href="/terms-and-conditions">Terms & Conditions</a> |
+        <AuthorizeView>
+            <Authorized>
+                 <a href="/account/delete-local-data">Delete Local Data</a>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</footer>
+
+<Yonderfix.web.Components.Layout.CookieConsent />
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

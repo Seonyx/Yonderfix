@@ -1,0 +1,85 @@
+@page "/account/delete-local-data"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies // Required for CookieAuthenticationDefaults
+@using Microsoft.Extensions.Logging
+
+@attribute [Authorize] // Ensure only authenticated users can access this
+@inject IHttpContextAccessor HttpContextAccessor
+@inject NavigationManager NavigationManager
+@inject ILogger<DeleteAccount> Logger
+
+<PageTitle>Delete Local Account Data</PageTitle>
+
+<h3>Delete Local Account Data</h3>
+
+<div class="alert alert-warning" role="alert">
+    <strong>Important:</strong> This action will log you out and clear all data Yonderfix.com has stored in <em>your current browser session</em> related to your Bluesky account. This includes your access tokens and any session-specific DPoP keys.
+    This will effectively disconnect your account from this application in this browser.
+</div>
+
+<p><strong>This action will NOT delete your actual Bluesky account.</strong> It only removes data stored by Yonderfix.com within this browser session.</p>
+
+<hr />
+
+<p>If you wish to proceed, please click the button below.</p>
+<button class="btn btn-danger" @onclick="ConfirmDeleteAsync">Delete My Local Data and Logout</button>
+
+@if (!string.IsNullOrEmpty(confirmationMessage))
+{
+    <p class="text-success mt-3">@confirmationMessage</p>
+}
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="text-danger mt-3">@errorMessage</p>
+}
+
+@code {
+    private string? errorMessage;
+    private string? confirmationMessage;
+
+    private async Task ConfirmDeleteAsync()
+    {
+        var user = HttpContextAccessor.HttpContext?.User;
+        var userDid = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        Logger.LogInformation("ConfirmDeleteAsync action initiated by UserDID: {UserDid}", userDid ?? "Unknown");
+
+        try
+        {
+            var httpContext = HttpContextAccessor.HttpContext;
+            if (httpContext != null)
+            {
+                // Clear all session data associated with the user
+                httpContext.Session.Clear();
+                Logger.LogInformation("User session data cleared for UserDID: {UserDid}.", userDid ?? "Unknown");
+
+                // Sign the user out from the cookie authentication scheme
+                // This removes the authentication cookie.
+                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                Logger.LogInformation("User signed out from cookie authentication scheme for UserDID: {UserDid}.", userDid ?? "Unknown");
+
+                confirmationMessage = "Your local data has been cleared, and you have been logged out. Redirecting to homepage...";
+                errorMessage = null; // Clear any previous error
+                StateHasChanged(); // Update UI to show confirmation
+
+                // Redirect to home page after a short delay
+                await Task.Delay(2000); // Delay for 2 seconds to allow user to read message
+                NavigationManager.NavigateTo("/", forceLoad: true);
+            }
+            else
+            {
+                errorMessage = "HttpContext is not available. Cannot clear data. Please try clearing your browser cookies manually for this site.";
+                Logger.LogWarning("HttpContext not available in DeleteAccount.razor when trying to delete local data for UserDID: {UserDid}.", userDid ?? "Unknown");
+                confirmationMessage = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred while deleting your local data: {ex.Message}";
+            Logger.LogError(ex, "Error during local account data deletion for UserDID: {UserDid}.", userDid ?? "Unknown");
+            confirmationMessage = null;
+        }
+        StateHasChanged();
+    }
+}

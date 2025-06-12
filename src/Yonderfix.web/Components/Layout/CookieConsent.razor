@@ -1,0 +1,69 @@
+@inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
+@using Microsoft.Extensions.Logging
+
+@inject ILogger<CookieConsent> Logger
+
+@if (!consentGiven)
+{
+    <div id="cookieConsentBanner" style="position: fixed; bottom: 0; left:0; width: 100%; background-color: #333; color: #fff; padding: 15px; text-align: center; border-top: 1px solid #444; z-index: 1050;">
+        <p style="margin: 0; font-size: 0.9em;">
+            This website uses essential cookies for session management and authentication to ensure you get the best experience.
+            By continuing to use this site, you consent to our use of these cookies.
+            <a href="/privacy-policy" style="color: #aaa;">Learn More in our Privacy Policy</a>
+        </p>
+        <button style="margin-top: 10px; padding: 8px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 3px; cursor: pointer;" @onclick="AcceptConsent">Accept & Close</button>
+    </div>
+}
+
+@code {
+    private bool consentGiven = true; // Default to true to avoid flash of banner if already consented
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var result = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cookieConsentYonderfix_v1");
+                if (result != "true") // If not explicitly "true", assume not given or old version
+                {
+                    consentGiven = false;
+                    StateHasChanged(); // Re-render to show the banner
+                }
+            }
+            catch (JSException jsEx)
+            {
+                Logger.LogWarning(jsEx, "JavaScript interop error while getting 'cookieConsentYonderfix_v1' from localStorage. This can happen during pre-rendering or if localStorage is unavailable. Assuming consent not given.");
+                consentGiven = false; // Assume consent not given if we can't check
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Generic error while getting 'cookieConsentYonderfix_v1' from localStorage. Assuming consent not given.");
+                consentGiven = false; // Assume consent not given on other errors too
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task AcceptConsent()
+    {
+        consentGiven = true;
+        Logger.LogInformation("Cookie consent accepted by user.");
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "cookieConsentYonderfix_v1", "true");
+            Logger.LogDebug("'cookieConsentYonderfix_v1' set to 'true' in localStorage.");
+        }
+        catch (JSException jsEx)
+        {
+            Logger.LogWarning(jsEx, "JavaScript interop error while setting 'cookieConsentYonderfix_v1' in localStorage. Consent might not be remembered.");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Generic error while setting 'cookieConsentYonderfix_v1' in localStorage.");
+        }
+        StateHasChanged(); // Re-render to hide the banner
+    }
+}

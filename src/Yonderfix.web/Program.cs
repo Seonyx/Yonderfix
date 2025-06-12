@@ -36,6 +36,9 @@ builder.Services.AddHttpClient<AtprotoService>()
         return new AtprotoService(httpClient, atProtoClient);
     });
 
+// Add BlueskyService (for manual OAuth flow)
+builder.Services.AddHttpClient<BlueskyService>();
+
 // Load user secrets in development
 if (builder.Environment.IsDevelopment())
 {
@@ -58,10 +61,19 @@ var authBuilder = builder.Services.AddAuthentication(options =>
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 });
 
-// Add Identity cookies first
-authBuilder.AddIdentityCookies();
+// Add Identity cookies first, but also ensure our desired default scheme for manual sign-in is configured.
+authBuilder.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.LoginPath = "/Account/Login"; // Path for manual login redirects
+    options.LogoutPath = "/Account/Logout";
+    // options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Example
+})
+.AddIdentityCookies(); // This configures Identity specific cookies like ExternalScheme, TwoFactorScheme etc.
+
 
 // Add the Bluesky OAuth scheme (only once)
+// Note: This existing OAuth handler might conflict or be an alternative to the manual flow.
+// For the current subtask, we are focusing on the manual flow in AccountController.
 authBuilder.AddOAuth("Bluesky", options =>
 {
     options.ClientId = builder.Configuration["Authentication:Bluesky:ClientId"]
@@ -104,6 +116,15 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+// Session services
+builder.Services.AddDistributedMemoryCache(); // Required for in-memory session provider
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true; // Make the session cookie HTTP only
+    options.Cookie.IsEssential = true; // Make the session cookie essential
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -119,12 +140,30 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+// app.UseAntiforgery(); // Typically after UseAuthentication/UseAuthorization if they deal with cookies.
+
+// Session middleware must be registered before any middleware that needs to access session state.
+app.UseSession();
+
+// Authentication and Authorization middleware.
+// UseAuthentication sets up HttpContext.User.
+// UseAuthorization enforces authorization policies.
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Antiforgery should be after authentication and authorization to ensure HttpContext.User is populated.
 app.UseAntiforgery();
+
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+// Controller mapping for AccountController and other MVC controllers
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

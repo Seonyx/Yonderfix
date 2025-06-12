@@ -1,53 +1,202 @@
-﻿@page "/subscribers"
-@inject Yonderfix.web.Services.BlueskyService BlueskyService
+@page "/subscribers"
+@using Microsoft.AspNetCore.Authorization
+@using Yonderfix.web.Models
 @using Yonderfix.web.Services
+@using Microsoft.Extensions.Logging
 
-<h3>Non-Mutual Subscribers</h3>
+@attribute [Authorize]
+@inject BlueskyService BlueskyService
+@inject ILogger<Subscribers> Logger
 
-@if (isLoading)
+<PageTitle>My Followers</PageTitle>
+
+<h1>My Followers</h1>
+
+@if (isLoading && !subscribers.Any())
 {
-    <p>Loading subscribers...</p>
+    <p><em>Loading followers...</em></p>
 }
-else if (errorMessage != null)
+else if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p style="color: red;">Error: @errorMessage</p>
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
 }
-else if (subscribers?.Any() == true)
+
+@if (subscribers.Any())
 {
-    <ul>
-        @foreach (var sub in subscribers)
+    <ul class="list-group">
+        @foreach (var subscriber in subscribers)
         {
-            <li>
-                <img src="@sub.ProfilePictureUrl" alt="@sub.Username" width="40" height="40" style="vertical-align:middle; margin-right:8px;" />
-                @sub.Username
-                <!-- Add Unfollow button and pagination here later -->
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="@(string.IsNullOrEmpty(subscriber.ProfilePictureUrl) ? "default-avatar.png" : subscriber.ProfilePictureUrl)" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;" />
+                    <strong>@subscriber.DisplayName</strong> <span class="text-muted">@subscriber.Handle</span>
+
+                    @if (subscriber.IsFollowedByMe) // This person is in my followers list. If I also follow them, it's mutual.
+                    {
+                        <span class="badge bg-success ms-2">Mutual Follow</span>
+                    }
+                    else // This person is in my followers list, but I don't follow them back.
+                    {
+                        <span class="badge bg-info ms-2">Follows you</span>
+                    }
+
+                </div>
+                <div>
+                    @if (subscriber.IsFollowedByMe)
+                    {
+                        <button class="btn btn-sm btn-outline-danger"
+                                @onclick="() => HandleUnfollowAsync(subscriber)"
+                                disabled="@unfollowingInProgress.Contains(subscriber.Did)">
+                            @if (unfollowingInProgress.Contains(subscriber.Did))
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="visually-hidden">Loading...</span>
+                            }
+                            else
+                            {
+                                @("Unfollow")
+                            }
+                        </button>
+                    }
+                    else
+                    {
+                        <!-- Placeholder for a "Follow" button if desired in the future -->
+                        @* <button class="btn btn-sm btn-primary" @onclick="() => HandleFollowAsync(subscriber)">Follow</button> *@
+                    }
+                </div>
             </li>
         }
     </ul>
 }
-else
+else if (!isLoading)
 {
-    <p>No non-mutual subscribers found.</p>
+    <p>You don't have any followers yet, or there was an issue loading them.</p>
 }
 
+
+@if (!string.IsNullOrEmpty(nextCursor) && !isLoading && !isLoadingMore)
+{
+    <div class="mt-3">
+        <button class="btn btn-primary" @onclick="() => LoadFollowersAsync(true)">Load More</button>
+    </div>
+}
+
+@if (isLoadingMore)
+{
+    <p><em>Loading more followers...</em></p>
+}
+
+
 @code {
-    private IEnumerable<Yonderfix.web.Models.Subscriber>? subscribers;
+    private List<Yonderfix.web.Models.Subscriber> subscribers = new();
+    private string? currentCursorForNextLoad; // Stores the cursor to be used for the *next* load operation
+    private string? nextCursor; // Received from the API, indicates if there's more data past the current set
     private bool isLoading = true;
+    private bool isLoadingMore = false;
     private string? errorMessage;
+    private HashSet<string> unfollowingInProgress = new();
 
     protected override async Task OnInitializedAsync()
     {
+        Logger.LogInformation("Subscribers page initialized.");
+        await LoadFollowersAsync(loadMore: false);
+    }
+
+    private async Task LoadFollowersAsync(bool loadMore = false)
+    {
+        if (!loadMore)
+        {
+            isLoading = true;
+            subscribers.Clear(); // Clear existing subscribers for a fresh load
+            currentCursorForNextLoad = null; // Reset cursor for a fresh load
+            nextCursor = null;
+        }
+        else
+        {
+            isLoadingMore = true;
+        }
+        errorMessage = null;
+        StateHasChanged(); // Update UI to show loading state
+
         try
         {
-            subscribers = await BlueskyService.GetNonMutualFollowersAsync();
+            Logger.LogInformation("Attempting to load followers. Load more: {LoadMore}, Cursor: {Cursor}", loadMore, currentCursorForNextLoad);
+            var result = await BlueskyService.GetMyFollowersWithFollowBackStatusAsync(limit: 25, cursor: currentCursorForNextLoad);
+
+            if (result.Subscribers != null)
+            {
+                if (loadMore)
+                {
+                    subscribers.AddRange(result.Subscribers);
+                }
+                else
+                {
+                    subscribers = result.Subscribers;
+                }
+                nextCursor = result.Cursor; // This is the cursor for the *next* page of data
+                currentCursorForNextLoad = result.Cursor; // Store this to be used if "Load More" is clicked again
+                Logger.LogInformation("Loaded {Count} subscribers. Next cursor: {NextCursor}", result.Subscribers.Count, nextCursor);
+            }
+            else
+            {
+                Logger.LogWarning("LoadFollowersAsync received null subscribers list.");
+            }
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            Logger.LogError(ex, "Error loading followers. Load more: {LoadMore}", loadMore);
+            errorMessage = $"An error occurred while loading followers: {ex.Message}";
         }
         finally
         {
-            isLoading = false;
+            if (!loadMore)
+            {
+                isLoading = false;
+            }
+            else
+            {
+                isLoadingMore = false;
+            }
+            StateHasChanged(); // Update UI after loading or error
+        }
+    }
+
+    private async Task HandleUnfollowAsync(Subscriber userToUnfollow)
+    {
+        if (string.IsNullOrEmpty(userToUnfollow.MyFollowRecordUri))
+        {
+            errorMessage = $"Cannot unfollow {userToUnfollow.Handle}: follow record URI is missing.";
+            Logger.LogError("Cannot unfollow {UserHandle} ({UserDid}): MyFollowRecordUri is missing.", userToUnfollow.Handle, userToUnfollow.Did);
+            return;
+        }
+
+        unfollowingInProgress.Add(userToUnfollow.Did);
+        errorMessage = null;
+        StateHasChanged();
+
+        try
+        {
+            Logger.LogInformation("Attempting to unfollow user {UserDid} using record URI {RecordUri}", userToUnfollow.Did, userToUnfollow.MyFollowRecordUri);
+            await BlueskyService.UnfollowUserAsync(userToUnfollow.Did, userToUnfollow.MyFollowRecordUri);
+            Logger.LogInformation("Successfully unfollowed user {UserDid}", userToUnfollow.Did);
+
+            // Update UI: Set IsFollowedByMe to false and clear the record URI.
+            // Also, since we unfollowed them, they are no longer a "mutual" follow from our perspective.
+            userToUnfollow.IsFollowedByMe = false;
+            userToUnfollow.FollowsMeBack = false; // If I unfollow someone who was my follower, it's no longer a mutual follow.
+            userToUnfollow.MyFollowRecordUri = null;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error unfollowing user {UserDid}", userToUnfollow.Did);
+            errorMessage = $"An error occurred while unfollowing {userToUnfollow.Handle}: {ex.Message}";
+        }
+        finally
+        {
+            unfollowingInProgress.Remove(userToUnfollow.Did);
+            StateHasChanged();
         }
     }
 }
