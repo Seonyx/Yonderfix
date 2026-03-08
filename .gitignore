@@ -6,3 +6,6 @@ obj/
 *.user
 *.suo
 *.log
+
+# Project transfer/spec folder — not part of source
+yonderfix-transfer/

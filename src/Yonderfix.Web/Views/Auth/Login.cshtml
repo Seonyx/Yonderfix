@@ -1,0 +1,71 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5 col-lg-4">
+        <div class="text-center mb-4">
+            <h1 class="h2 font-weight-bold text-primary">Yonderfix</h1>
+            <p class="text-muted">Bluesky Follower Manager</p>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h5 class="card-title mb-4">Sign In</h5>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger border-danger" role="alert">
+                        <strong>Sign in failed &mdash;</strong> @Model.ErrorMessage
+                    </div>
+                }
+
+                <form asp-controller="Auth" asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label asp-for="Handle" class="font-weight-medium">Bluesky Handle</label>
+                        <input asp-for="Handle"
+                               class="form-control"
+                               placeholder="you.bsky.social"
+                               autocomplete="username"
+                               autofocus />
+                        <span asp-validation-for="Handle" class="text-danger small"></span>
+                        <small class="form-text text-muted">e.g. <em>yourname.bsky.social</em> or your registered email address</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="AppPassword" class="font-weight-medium">App Password</label>
+                        <input asp-for="AppPassword"
+                               type="password"
+                               class="form-control"
+                               placeholder="xxxx-xxxx-xxxx-xxxx"
+                               autocomplete="current-password" />
+                        <span asp-validation-for="AppPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-3">
+                        Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3 border-info">
+            <div class="card-body py-3 px-4">
+                <h6 class="card-title text-info mb-2">Using an App Password</h6>
+                <p class="card-text small text-muted mb-1">
+                    Do not use your main Bluesky password. Generate an App Password at:
+                </p>
+                <p class="card-text small">
+                    <strong>Bluesky &rarr; Settings &rarr; Privacy and Security &rarr; App Passwords</strong>
+                </p>
+                <p class="card-text small text-muted mb-0">
+                    App passwords are revocable and keep your main password safe.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

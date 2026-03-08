@@ -1,0 +1,88 @@
+/* Yonderfix - Custom Styles */
+
+/* Avatar sizes */
+.avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.avatar-lg {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.avatar-fallback {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.avatar-placeholder {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+}
+
+/* Table avatar column alignment */
+table td.align-middle img.avatar,
+table td.align-middle .avatar-fallback {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Nav brand */
+.navbar-brand {
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+}
+
+/* Clickable table rows */
+.table-hover tbody tr:hover {
+    cursor: default;
+}
+
+/* Font weight helpers */
+.font-weight-medium {
+    font-weight: 500;
+}
+
+/* Card subtle border */
+.card {
+    border-radius: 0.5rem;
+}
+
+/* Footer */
+footer.footer {
+    font-size: 0.85rem;
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: #007bff;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Loading state - add .loading class to disable buttons during submit */
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.65;
+}
+
+/* Form controls - tighten max width on narrow forms */
+.form-narrow .form-control {
+    max-width: 360px;
+}
+
+/* Display count badge */
+.count-badge {
+    font-size: 0.75rem;
+    padding: 0.2em 0.55em;
+}

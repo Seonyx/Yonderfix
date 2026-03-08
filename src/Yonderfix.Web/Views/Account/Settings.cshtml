@@ -1,0 +1,52 @@
+@model SettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="mb-1">Settings</h2>
+        <p class="text-muted">Configure your Yonderfix preferences</p>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @Model.SuccessMessage
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Display Settings</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Account" asp-action="Settings" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label asp-for="PageSize" class="font-weight-medium">Items Per Page</label>
+                        <input asp-for="PageSize"
+                               type="number"
+                               class="form-control"
+                               min="5"
+                               max="100"
+                               style="max-width:120px;" />
+                        <span asp-validation-for="PageSize" class="text-danger small"></span>
+                        <small class="form-text text-muted">Number of profiles to show per page (5&ndash;100).</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save Settings
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
