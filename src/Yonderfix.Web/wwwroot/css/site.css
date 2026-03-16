@@ -210,6 +210,7 @@ label, .form-group label { font-size: 0.72rem; font-weight: 600; letter-spacing:
 .form-text { font-size: 0.75rem; color: var(--text-muted); }
 
 /* ── Pagination ─────────────────────────────────────────────────── */
+.pagination { flex-wrap: nowrap; }
 .pagination .page-link { background-color: var(--bg-surface); border-color: var(--border); color: var(--text-muted); font-size: 0.78rem; padding: 0.3rem 0.65rem; transition: all var(--transition); }
 .pagination .page-link:hover { background-color: var(--bg-surface-2); border-color: var(--border); color: var(--text-primary); }
 .pagination .page-item.active .page-link { background-color: var(--accent); border-color: var(--accent); color: #fff; }
