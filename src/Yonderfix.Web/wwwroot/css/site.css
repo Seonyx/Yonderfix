@@ -79,6 +79,8 @@ a:hover { color: var(--accent-hover); text-decoration: none; }
 .navbar-dark .navbar-nav .nav-item:last-child .nav-link { color: var(--text-muted) !important; }
 .navbar-dark .navbar-nav .nav-item:last-child .nav-link:hover { color: var(--danger) !important; }
 .navbar-toggler { border-color: var(--border); padding: 0.25rem 0.5rem; }
+.navbar-collapse { display: flex !important; flex-basis: auto; }
+.navbar-nav { flex-direction: row !important; align-items: center; }
 
 /* ── Container ──────────────────────────────────────────────────── */
 .container { max-width: 980px; }
@@ -210,7 +212,8 @@ label, .form-group label { font-size: 0.72rem; font-weight: 600; letter-spacing:
 .form-text { font-size: 0.75rem; color: var(--text-muted); }
 
 /* ── Pagination ─────────────────────────────────────────────────── */
-.pagination { flex-wrap: nowrap; }
+.pagination { display: flex !important; flex-direction: row !important; flex-wrap: nowrap; list-style: none; }
+.page-item { display: block; flex: 0 0 auto; }
 .pagination .page-link { background-color: var(--bg-surface); border-color: var(--border); color: var(--text-muted); font-size: 0.78rem; padding: 0.3rem 0.65rem; transition: all var(--transition); }
 .pagination .page-link:hover { background-color: var(--bg-surface-2); border-color: var(--border); color: var(--text-primary); }
 .pagination .page-item.active .page-link { background-color: var(--accent); border-color: var(--accent); color: #fff; }
