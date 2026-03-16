@@ -64,7 +64,7 @@ else
                                     @profile.DisplayLabel
                                 </a>
                             </td>
-                            <td class="align-middle text-muted small">@@@profile.Handle</td>
+                            <td class="align-middle handle">@@@profile.Handle</td>
                             <td class="align-middle text-right">
                                 <form asp-controller="Followers" asp-action="FollowBack" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()

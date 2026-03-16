@@ -28,7 +28,7 @@
                 }
                 <div>
                     <h4 class="mb-0 font-weight-bold">@Model.DisplayName</h4>
-                    <p class="text-muted mb-0">@@@Model.Handle</p>
+                    <p class="profile-handle mb-0">@@@Model.Handle</p>
                 </div>
             </div>
         </div>
@@ -37,26 +37,26 @@
 
 <div class="row mb-4">
     <div class="col-md-4 mb-3">
-        <div class="card shadow-sm text-center h-100">
+        <div class="card stat-card stat-followers h-100">
             <div class="card-body">
-                <h3 class="display-4 font-weight-bold text-primary mb-0">@Model.FollowersCount</h3>
-                <p class="card-text text-muted mt-1">Followers</p>
+                <div class="stat-value text-primary">@Model.FollowersCount</div>
+                <div class="stat-label">Followers</div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card shadow-sm text-center h-100">
+        <div class="card stat-card stat-following h-100">
             <div class="card-body">
-                <h3 class="display-4 font-weight-bold text-info mb-0">@Model.FollowsCount</h3>
-                <p class="card-text text-muted mt-1">Following</p>
+                <div class="stat-value text-info">@Model.FollowsCount</div>
+                <div class="stat-label">Following</div>
             </div>
         </div>
     </div>
     <div class="col-md-4 mb-3">
-        <div class="card shadow-sm text-center h-100">
+        <div class="card stat-card stat-mutual h-100">
             <div class="card-body">
-                <h3 class="display-4 font-weight-bold text-success mb-0">@Model.MutualCount</h3>
-                <p class="card-text text-muted mt-1">Mutual Connections</p>
+                <div class="stat-value text-success">@Model.MutualCount</div>
+                <div class="stat-label">Mutual Connections</div>
             </div>
         </div>
     </div>
