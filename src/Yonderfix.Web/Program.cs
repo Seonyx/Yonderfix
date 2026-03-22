@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Yonderfix.Web.Data;
 using Yonderfix.Web.Services;
 
@@ -20,8 +21,17 @@ builder.Services.AddScoped<BlueskyService>();
 builder.Services.AddScoped<FollowerAnalysisService>();
 builder.Services.AddSingleton<SettingsService>();
 
-builder.Services.AddDbContext<YonderfixDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<YonderfixDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+else
+{
+    builder.Services.AddDbContext<YonderfixDbContext>(options =>
+        options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0))));
+}
 
 var app = builder.Build();
 

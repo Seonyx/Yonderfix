@@ -21,6 +21,14 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore src/Yonderfix.Web/Yonderfix.Web.csproj
 
+      - name: Inject production connection string
+        shell: powershell
+        run: |
+          $path = "src\Yonderfix.Web\appsettings.Production.json"
+          $json = Get-Content $path | ConvertFrom-Json
+          $json.ConnectionStrings.DefaultConnection = "${{ secrets.MYSQL_CONNECTION_STRING }}"
+          $json | ConvertTo-Json -Depth 10 | Set-Content $path
+
       - name: Build and Publish
         run: dotnet publish src/Yonderfix.Web/Yonderfix.Web.csproj -c Release -o ${{ github.workspace }}\publish --no-restore
 
