@@ -3,90 +3,59 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="row mb-4">
-    <div class="col">
-        <h2 class="mb-0">Dashboard</h2>
-        <p class="text-muted">Your Bluesky account overview</p>
+<div class="dash-profile mb-4">
+    @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+    {
+        <img src="@Model.AvatarUrl" alt="Avatar" class="avatar-lg rounded-circle" />
+    }
+    else
+    {
+        <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center">
+            <span>@(Model.DisplayName.Length > 0 ? Model.DisplayName[0].ToString().ToUpper() : "?")</span>
+        </div>
+    }
+    <div class="dash-profile-info">
+        <div class="dash-profile-name">@Model.DisplayName</div>
+        <div class="profile-handle">@@@Model.Handle</div>
     </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-body d-flex align-items-center">
-                @if (!string.IsNullOrEmpty(Model.AvatarUrl))
-                {
-                    <img src="@Model.AvatarUrl" alt="Avatar" class="avatar-lg rounded-circle mr-3" />
-                }
-                else
-                {
-                    <div class="avatar-placeholder rounded-circle mr-3 bg-primary d-flex align-items-center justify-content-center">
-                        <span class="text-white font-weight-bold" style="font-size:1.5rem;">
-                            @(Model.DisplayName.Length > 0 ? Model.DisplayName[0].ToString().ToUpper() : "?")
-                        </span>
-                    </div>
-                }
-                <div>
-                    <h4 class="mb-0 font-weight-bold">@Model.DisplayName</h4>
-                    <p class="profile-handle mb-0">@@@Model.Handle</p>
-                </div>
-            </div>
+<div class="dash-stats mb-4">
+    <div class="card stat-card stat-followers">
+        <div class="card-body">
+            <div class="stat-value text-primary">@Model.FollowersCount</div>
+            <div class="stat-label">Followers</div>
         </div>
     </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-4 mb-3">
-        <div class="card stat-card stat-followers h-100">
-            <div class="card-body">
-                <div class="stat-value text-primary">@Model.FollowersCount</div>
-                <div class="stat-label">Followers</div>
-            </div>
+    <div class="card stat-card stat-following">
+        <div class="card-body">
+            <div class="stat-value text-info">@Model.FollowsCount</div>
+            <div class="stat-label">Following</div>
         </div>
     </div>
-    <div class="col-md-4 mb-3">
-        <div class="card stat-card stat-following h-100">
-            <div class="card-body">
-                <div class="stat-value text-info">@Model.FollowsCount</div>
-                <div class="stat-label">Following</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card stat-card stat-mutual h-100">
-            <div class="card-body">
-                <div class="stat-value text-success">@Model.MutualCount</div>
-                <div class="stat-label">Mutual Connections</div>
-            </div>
+    <div class="card stat-card stat-mutual">
+        <div class="card-body">
+            <div class="stat-value text-success">@Model.MutualCount</div>
+            <div class="stat-label">Mutual</div>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="card-title">Followers Not Following Back</h5>
-                <p class="card-text text-muted">
-                    People who follow you, but you don't follow them back. Follow them back to build mutual connections.
-                </p>
-                <a asp-controller="Followers" asp-action="NotFollowingBack" class="btn btn-outline-primary">
-                    View Followers Not Following Back
-                </a>
-            </div>
+<div class="dash-actions">
+    <div class="card dash-action-card">
+        <div class="card-body">
+            <div class="dash-action-count text-primary">@Model.NotFollowingBackCount</div>
+            <h5 class="card-title">Followers Not Following Back</h5>
+            <p class="card-text text-muted">People who follow you, but you don't follow back.</p>
+            <a asp-controller="Followers" asp-action="NotFollowingBack" class="btn btn-outline-primary btn-sm">View &rarr;</a>
         </div>
     </div>
-    <div class="col-md-6 mb-3">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h5 class="card-title">Following Not Following Back</h5>
-                <p class="card-text text-muted">
-                    People you follow who don't follow you back. Clean up your following list by unfollowing non-mutuals.
-                </p>
-                <a asp-controller="Following" asp-action="NotFollowingBack" class="btn btn-outline-danger">
-                    View Following Not Following Back
-                </a>
-            </div>
+    <div class="card dash-action-card">
+        <div class="card-body">
+            <div class="dash-action-count text-danger">@Model.NotFollowedBackCount</div>
+            <h5 class="card-title">Following Not Following Back</h5>
+            <p class="card-text text-muted">People you follow who don't follow you back.</p>
+            <a asp-controller="Following" asp-action="NotFollowingBack" class="btn btn-outline-danger btn-sm">View &rarr;</a>
         </div>
     </div>
 </div>

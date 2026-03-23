@@ -54,7 +54,9 @@ public class DashboardController : BaseController
             AvatarUrl = session.AvatarUrl,
             FollowersCount = followersCount,
             FollowsCount = followsCount,
-            MutualCount = mutualCount
+            MutualCount = mutualCount,
+            NotFollowingBackCount = followersCount - mutualCount,
+            NotFollowedBackCount = followsCount - mutualCount
         };
 
         return View(model);

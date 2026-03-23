@@ -302,6 +302,43 @@ tbody tr:nth-child(14)   { animation-delay: 320ms; }
 tbody tr:nth-child(15)   { animation-delay: 328ms; }
 tbody tr:nth-child(n+16) { animation-delay: 335ms; }
 
+/* ── Dashboard ───────────────────────────────────────────────────── */
+.dash-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.dash-profile-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+.dash-stats {
+    display: flex;
+    gap: 1rem;
+}
+.dash-stats .card { flex: 1; }
+.dash-action-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -1px;
+    margin-bottom: 0.4rem;
+}
+.dash-actions {
+    display: flex;
+    gap: 1rem;
+}
+.dash-action-card { flex: 1; }
+.dash-action-card .card-title { font-size: 0.9rem; margin-bottom: 0.4rem; }
+.dash-action-card .card-text { font-size: 0.82rem; margin-bottom: 0.75rem; }
+
 /* ── Login Page ─────────────────────────────────────────────────── */
 .login-wrap {
     display: flex;
