@@ -417,7 +417,7 @@ tbody tr:nth-child(n+16) { animation-delay: 335ms; }
     .navbar { padding: 0 0.5rem; }
     .navbar-logo { height: 30px; }
     .navbar-dark .navbar-nav .nav-link { padding: 0.7rem 0.35rem; font-size: 0.68rem; }
-    /* Hide "Sign Out" text, keep link accessible */
+    /* Shorten "Sign Out" to "Out" on mobile */
     .navbar-nav.ml-auto .nav-link span { display: none; }
-    .navbar-nav.ml-auto .nav-link::after { content: '⏻'; font-size: 0.9rem; }
+    .navbar-nav.ml-auto .nav-link::after { content: 'Out'; }
 }
