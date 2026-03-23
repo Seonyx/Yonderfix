@@ -46,24 +46,14 @@ a:hover { color: var(--accent-hover); text-decoration: none; }
     min-height: 48px;
 }
 .navbar-brand {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--text-primary) !important;
     padding: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
-.navbar-brand .brand-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(0, 133, 255, 0.6);
-    flex-shrink: 0;
+.navbar-logo {
+    height: 30px;
+    width: auto;
+    display: block;
 }
 .navbar-dark .navbar-nav .nav-link {
     color: var(--text-muted) !important;
