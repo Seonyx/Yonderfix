@@ -85,6 +85,17 @@ a:hover { color: var(--accent-hover); text-decoration: none; }
 /* ── Container ──────────────────────────────────────────────────── */
 .container { max-width: 980px; }
 
+/* ── Page Header ─────────────────────────────────────────────────── */
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+.page-header .result-count { padding-top: 0.25rem; white-space: nowrap; }
+
 /* ── Typography ─────────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 { color: var(--text-primary); font-weight: 600; }
 h2 { font-size: 1.1rem; letter-spacing: -0.01em; }
@@ -153,7 +164,7 @@ h2 { font-size: 1.1rem; letter-spacing: -0.01em; }
 
 /* ── Tables ─────────────────────────────────────────────────────── */
 .table { color: var(--text-primary); border-color: var(--border); margin-bottom: 0; font-size: 0.85rem; }
-.table td, .table th { border-color: var(--border); padding: 0.55rem 0.75rem; vertical-align: middle; }
+.table td, .table th { border-color: var(--border); padding: 0.65rem 0.75rem; vertical-align: middle; }
 .table th { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 .thead-light th {
     background-color: var(--bg-surface-2) !important;
@@ -178,8 +189,8 @@ a.text-body:hover { color: var(--accent) !important; }
 .btn:active { transform: scale(0.95); }
 .btn-primary { background-color: var(--accent); border-color: var(--accent); color: #fff; }
 .btn-primary:hover, .btn-primary:focus { background-color: var(--accent-hover); border-color: var(--accent-hover); color: #fff; box-shadow: none; }
-.btn-success { background-color: transparent; border-color: var(--success); color: var(--success); }
-.btn-success:hover, .btn-success:focus { background-color: var(--success-dim); border-color: var(--success); color: var(--success); box-shadow: none; }
+.btn-success { background-color: var(--success) !important; border-color: var(--success) !important; color: #0D1117 !important; font-weight: 600; }
+.btn-success:hover, .btn-success:focus { background-color: #34a143 !important; border-color: #34a143 !important; color: #0D1117 !important; box-shadow: none; }
 .btn-outline-primary { border-color: var(--accent); color: var(--accent); background: transparent; }
 .btn-outline-primary:hover, .btn-outline-primary:focus { background-color: var(--accent-dim); border-color: var(--accent); color: var(--accent); box-shadow: none; }
 .btn-outline-danger { border-color: var(--danger); color: var(--danger); background: transparent; }
@@ -237,9 +248,9 @@ label, .form-group label { font-size: 0.75rem; font-weight: 600; letter-spacing:
 .pagination .page-item.disabled .page-link { background-color: var(--bg-surface); border-color: var(--border); color: var(--border); }
 
 /* ── Avatars ────────────────────────────────────────────────────── */
-.avatar { width: 36px; height: 36px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); }
+.avatar { width: 40px; height: 40px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); }
 .avatar-lg { width: 60px; height: 60px; object-fit: cover; flex-shrink: 0; border: 2px solid var(--border); }
-.avatar-fallback { width: 36px; height: 36px; flex-shrink: 0; background-color: var(--bg-surface-3) !important; border: 1px solid var(--border); font-size: 0.72rem; font-weight: 700; color: var(--accent) !important; }
+.avatar-fallback { width: 40px; height: 40px; flex-shrink: 0; background-color: var(--bg-surface-3) !important; border: 1px solid var(--border); font-size: 0.78rem; font-weight: 700; color: var(--accent) !important; }
 .avatar-placeholder { width: 60px; height: 60px; flex-shrink: 0; background-color: var(--bg-surface-3) !important; border: 2px solid var(--border); font-size: 1.4rem; font-weight: 700; color: var(--accent) !important; }
 
 /* ── Footer ─────────────────────────────────────────────────────── */
