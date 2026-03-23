@@ -27,13 +27,6 @@
 }
 else
 {
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="result-count">
-            Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)&ndash;@(Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalCount))
-            of @Model.TotalCount
-        </span>
-    </div>
-
     <div class="card mb-4">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
