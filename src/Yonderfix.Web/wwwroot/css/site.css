@@ -51,7 +51,7 @@ a:hover { color: var(--accent-hover); text-decoration: none; }
     align-items: center;
 }
 .navbar-logo {
-    height: 30px;
+    height: 38px;
     width: auto;
     display: block;
 }
@@ -413,4 +413,11 @@ tbody tr:nth-child(n+16) { animation-delay: 335ms; }
     .stat-value { font-size: 1.5rem; }
     .card-body { padding: 0.875rem; }
     .table td:last-child .btn { width: 100%; }
+    /* Navbar: tighter spacing so all items fit on one line */
+    .navbar { padding: 0 0.5rem; }
+    .navbar-logo { height: 30px; }
+    .navbar-dark .navbar-nav .nav-link { padding: 0.7rem 0.35rem; font-size: 0.68rem; }
+    /* Hide "Sign Out" text, keep link accessible */
+    .navbar-nav.ml-auto .nav-link span { display: none; }
+    .navbar-nav.ml-auto .nav-link::after { content: '⏻'; font-size: 0.9rem; }
 }
