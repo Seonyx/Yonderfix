@@ -31,7 +31,7 @@ html, body {
     background-image: radial-gradient(ellipse at top, rgba(0, 133, 255, 0.04) 0%, transparent 55%);
     color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.6;
     min-height: 100vh;
 }
@@ -208,8 +208,25 @@ a.text-body:hover { color: var(--accent) !important; }
 }
 .form-control:focus { background-color: var(--bg-surface-2); border-color: var(--accent); color: var(--text-primary); box-shadow: 0 0 0 3px rgba(0,133,255,0.15); outline: none; }
 .form-control::placeholder { color: var(--text-muted); opacity: 0.6; }
-label, .form-group label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.6px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; }
+label, .form-group label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.4px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem; }
 .form-text { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ── Password Toggle ────────────────────────────────────────────── */
+.input-pw-wrap { position: relative; display: flex; align-items: center; }
+.input-pw-wrap .form-control { padding-right: 2.5rem; }
+.pw-toggle {
+    position: absolute;
+    right: 0.6rem;
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 0;
+    transition: color var(--transition);
+}
+.pw-toggle:hover { color: var(--text-primary); }
+.pw-toggle:focus { outline: 2px solid var(--accent); border-radius: 2px; }
 
 /* ── Pagination ─────────────────────────────────────────────────── */
 .pagination { display: flex !important; flex-direction: row !important; flex-wrap: nowrap; list-style: none; }
