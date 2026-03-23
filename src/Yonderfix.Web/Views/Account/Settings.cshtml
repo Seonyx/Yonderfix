@@ -3,10 +3,10 @@
     ViewData["Title"] = "Settings";
 }
 
-<div class="row mb-4">
-    <div class="col">
+<div class="page-header mb-4">
+    <div>
         <h2 class="mb-1">Settings</h2>
-        <p class="text-muted">Configure your Yonderfix preferences</p>
+        <p class="text-muted mb-0">Configure your Yonderfix preferences</p>
     </div>
 </div>
 
@@ -20,33 +20,40 @@
     </div>
 }
 
-<div class="row">
-    <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Display Settings</h5>
-            </div>
-            <div class="card-body">
-                <form asp-controller="Account" asp-action="Settings" method="post">
-                    @Html.AntiForgeryToken()
+<div class="settings-wrap">
+    <div class="card">
+        <div class="card-header">
+            <h5>Display Settings</h5>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Account" asp-action="Settings" method="post" id="settingsForm">
+                @Html.AntiForgeryToken()
 
-                    <div class="form-group">
-                        <label asp-for="PageSize" class="font-weight-medium">Items Per Page</label>
+                <div class="settings-field">
+                    <label asp-for="PageSize">Items Per Page</label>
+                    <div class="settings-field-body">
                         <input asp-for="PageSize"
                                type="number"
-                               class="form-control"
+                               class="form-control settings-number"
                                min="5"
-                               max="100"
-                               style="max-width:120px;" />
+                               max="100" />
+                        <small class="form-text">Number of profiles to show per page (5&ndash;100).</small>
                         <span asp-validation-for="PageSize" class="text-danger small"></span>
-                        <small class="form-text text-muted">Number of profiles to show per page (5&ndash;100).</small>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        Save Settings
-                    </button>
-                </form>
-            </div>
+                <button type="submit" class="btn btn-primary" id="saveBtn">Save Settings</button>
+            </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    document.getElementById('settingsForm').addEventListener('submit', function() {
+        var btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.textContent = 'Saving\u2026';
+    });
+</script>
+}

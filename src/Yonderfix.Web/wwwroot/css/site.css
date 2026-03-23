@@ -408,6 +408,13 @@ tbody tr:nth-child(n+16) { animation-delay: 335ms; }
     padding: 1.5rem;
 }
 
+/* ── Settings Page ───────────────────────────────────────────────── */
+.settings-wrap { max-width: 480px; }
+.settings-field { margin-bottom: 1.25rem; }
+.settings-field label { display: block; margin-bottom: 0.35rem; }
+.settings-field-body { display: flex; flex-direction: column; gap: 0.35rem; }
+.settings-number { width: 120px; }
+
 /* ── Mobile ─────────────────────────────────────────────────────── */
 @media (max-width: 576px) {
     .container { padding-left: 10px; padding-right: 10px; }
